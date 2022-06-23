@@ -514,15 +514,18 @@ rg_app_desc_t * init(uint8_t load_state)
     // bzhxx : fix LCD glitch at the start by cleaning up the buffer emulator
     memset(emulator_framebuffer, 0x0, sizeof(emulator_framebuffer));
 
+    rg_app_desc_t *app = odroid_system_get_app();
+
     // Hack: Use the same buffer twice
     update1.buffer = emulator_framebuffer;
     update2.buffer = emulator_framebuffer;
 
     //saveSRAM = odroid_settings_app_int32_get(NVS_KEY_SAVE_SRAM, 0);
     saveSRAM = false;
+    sramFile = NULL;
 
     // Load ROM
-    loader_init(NULL);
+    rom_load(app->romPath);
 
     // RTC
     memset(&rtc, 0, sizeof(rtc));
@@ -550,8 +553,6 @@ rg_app_desc_t * init(uint8_t load_state)
 
     memset(audiobuffer_dma, 0, sizeof(audiobuffer_dma));
     HAL_SAI_Transmit_DMA(&hsai_BlockA1, (uint8_t *) audiobuffer_dma, AUDIO_BUFFER_LENGTH_DMA_GB);
-
-    rg_app_desc_t *app = odroid_system_get_app();
 
     emu_init();
 
@@ -612,7 +613,7 @@ void app_main_gb(uint8_t load_state, uint8_t start_paused)
             if (saveSRAM_Timer > 0 && --saveSRAM_Timer == 0)
             {
                 // TO DO: Try compressing the sram file, it might reduce stuttering
-                sram_save();
+                sram_save(sramFile);
             }
         }
 
