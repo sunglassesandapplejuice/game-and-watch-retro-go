@@ -15,7 +15,7 @@
 #include "gnuboy/sound.h"
 #include "gnuboy/regs.h"
 #include "gnuboy/rtc.h"
-#include "gnuboy/defs.h"
+#include "gnuboy/emu.h"
 #include "common.h"
 #include "rom_manager.h"
 #include "appid.h"
@@ -30,6 +30,7 @@ static odroid_video_frame_t update1 = {GB_WIDTH, GB_HEIGHT, GB_WIDTH * 2, 2, 0xF
 static odroid_video_frame_t update2 = {GB_WIDTH, GB_HEIGHT, GB_WIDTH * 2, 2, 0xFF, -1, NULL, NULL, 0, {}};
 static odroid_video_frame_t *currentUpdate = &update1;
 
+static const char *sramFile;
 static bool saveSRAM = false;
 static int  saveSRAM_Timer = 0;
 
